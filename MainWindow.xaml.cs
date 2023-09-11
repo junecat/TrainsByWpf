@@ -142,13 +142,20 @@ namespace wpf1
 
     }
 
-    public class Train {
+    public class Train : INotifyPropertyChanged {
         
         public int Id { get; set; }
         public string Name { get { return $"Поезд {Id}"; } }
         public DateTime StartDt { get; set; }
         public DateTime FinishDt { get; set; }
-        public TrainStatuses TrainStatus { get; set; }
+        private TrainStatuses _trainStatus;
+        public TrainStatuses TrainStatus {
+            get { return _trainStatus; }
+            set {
+                _trainStatus = value;
+                OnPropertyChanged("TrainStatus");
+            } 
+        }
 
         public Train() { }
         public Train(int id, DateTime startDt, DateTime finishDt) { 
@@ -158,7 +165,11 @@ namespace wpf1
             TrainStatus = TrainStatuses.Запланирован; // Статус по умолчанию – «Запланирован»
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
 
+        private void OnPropertyChanged(string propertyName) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public enum TrainStatuses {
